@@ -24,10 +24,10 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JProgressBar;
 
 public class SendMail extends JDialog {
 	
@@ -173,9 +173,10 @@ public class SendMail extends JDialog {
 			while (true) {
 				try {
 					if (send) {
+						String jarPath = (SendMail.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+						
 						sendMail(txtTo.getText(), txtFrom.getText(), txtUser.getText(), new String(txtPwd.getPassword()), 
-								txtHost.getText(), txtPort.getText(), "Splited File: instruction", txtMessage.getText(), 
-								SendMail.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+								txtHost.getText(), txtPort.getText(), "Splited File: instruction", txtMessage.getText(), jarPath);
 						
 						for (int i = 0; i < files.size(); i++) {
 							sendMail(txtTo.getText(), txtFrom.getText(), txtUser.getText(), new String(txtPwd.getPassword()), 
@@ -187,7 +188,7 @@ public class SendMail extends JDialog {
 						
 						updateStatus(100);
 						JOptionPane.showMessageDialog(SendMail.this, "E-mail sent!");
-
+					 	
 						enable(true);
 						send = false;
 						SendMail.this.setVisible(false);
