@@ -42,7 +42,7 @@ public class FileCheater extends JFrame {
 		
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setTitle("File Cheater 1.0");
+		setTitle("File Cheater 1.1");
 
 		JLabel lblAction = new JLabel("Action:");
 		lblAction.setBounds(12, 13, 118, 22);

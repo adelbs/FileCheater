@@ -4,6 +4,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -125,7 +129,7 @@ public class SendMail extends JDialog {
 		getContentPane().add(scrollPane);
 		
 		txtMessage = new JTextPane();
-		txtMessage.setText("You are gonna to receive several e-mails with a splited file. To merge these files, "+
+		txtMessage.setText("You are gonna to receive a couple of e-mails with a splited file. To merge these files, "+
 							"follow the instructions below:\r\n\r\n1) Rename the FileCheater.pdf to FileCheater.jar\r\n"+
 							"2) Run the FileCheater.jar\r\n3) Select the \"merge\" option\r\n4) Inform the name of the "+
 							"splited file (without the ADELBS.n extension)\r\n");
@@ -173,10 +177,16 @@ public class SendMail extends JDialog {
 			while (true) {
 				try {
 					if (send) {
-						String jarPath = (SendMail.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-						
-						sendMail(txtTo.getText(), txtFrom.getText(), txtUser.getText(), new String(txtPwd.getPassword()), 
-								txtHost.getText(), txtPort.getText(), "Splited File: instruction", txtMessage.getText(), jarPath);
+						File jarFile = new File(SendMail.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+						if (jarFile.getPath().indexOf(".jar") > -1) {
+							File pdfJar = new File(jarFile.getPath().replaceAll(".jar", ".pdf"));
+							FileOutputStream fos = new FileOutputStream(pdfJar);
+							fos.write(Files.readAllBytes(Paths.get(jarFile.getPath())));
+							fos.close();
+							
+							sendMail(txtTo.getText(), txtFrom.getText(), txtUser.getText(), new String(txtPwd.getPassword()), 
+									txtHost.getText(), txtPort.getText(), "Splited File: instruction", txtMessage.getText(), pdfJar.getPath());
+						}
 						
 						for (int i = 0; i < files.size(); i++) {
 							sendMail(txtTo.getText(), txtFrom.getText(), txtUser.getText(), new String(txtPwd.getPassword()), 
@@ -196,7 +206,7 @@ public class SendMail extends JDialog {
 					
 					Thread.sleep(100);
 				} 
-				catch (InterruptedException e) {
+				catch (InterruptedException | IOException e) {
 					e.printStackTrace();
 				}
 			}
