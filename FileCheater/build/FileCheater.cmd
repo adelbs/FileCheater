@@ -1,0 +1,1 @@
+java -Xmx10000m -Xms2000m -jar FileCheater.jar

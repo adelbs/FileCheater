@@ -26,7 +26,6 @@ public class FileCheater extends JFrame {
 	private static FileCheater instance = null;
 	private static Runner runner;
 	
-	private SendMail sendMail;
 	private JProgressBar progressBar;
 	private JComboBox<String> cmbAction;
 	private JTextField txtFile;
@@ -38,11 +37,9 @@ public class FileCheater extends JFrame {
 		runner = new Runner();
 		runner.start();
 
-		sendMail = new SendMail(this);
-		
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setTitle("File Cheater 1.1");
+		setTitle("File Cheater 1.3");
 
 		JLabel lblAction = new JLabel("Action:");
 		lblAction.setBounds(12, 13, 118, 22);
@@ -78,8 +75,8 @@ public class FileCheater extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				runner.enable(false);
 				if (cmbAction.getSelectedItem().equals("split"))
-					runner.splitAS(txtFile.getText(), txtSize.getText().equals("") || Integer.parseInt(txtSize.getText()) <= 0 ? -1 
-							: Integer.parseInt(txtSize.getText()));
+					runner.splitAS(txtFile.getText(), txtSize.getText().equals("") || Integer.parseInt(txtSize.getText().replace(",", "")) <= 0 ? -1 
+							: Integer.parseInt(txtSize.getText().replace(",", "")));
 				else
 					runner.mergeAS(txtFile.getText());
 			}
@@ -217,12 +214,6 @@ public class FileCheater extends JFrame {
 				}
 				
 				showMessage("DONE! File splited in "+ numFile +" file(s).");
-				if (instance != null) {
-					if (numFile <= 20 && numBytes <= 10 && JOptionPane.showConfirmDialog(instance, 
-							"Would you like to send the files via e-mail?", "Send e-mail", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-						sendMail.openDialog(files);
-					}
-				}
 			} 
 			catch (Exception x) {
 				x.printStackTrace();
